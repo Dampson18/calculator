@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HTML Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f8ff;
+    }
+    .calculator {
+      background: #222;
+      border: 3px solid #008080;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      padding: 20px;
+      text-align: center;
+      width: 320px;
+    }
+    #result {
+      width: 100%;
+      height: 60px;
+      margin-bottom: 10px;
+      font-size: 1.5em;
+      text-align: right;
+      border: 1px solid #008080;
+      border-radius: 5px;
+      padding: 5px;
+      box-sizing: border-box;
+      background: #f0f0f0;
+      color: #000;
+    }
+    .btn {
+      width: 22%;
+      height: 50px;
+      margin: 5px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .btn.number {
+      background: #20b2aa;
+      color: white;
+    }
+    .btn.number:hover {
+      background: #008b8b;
+    }
+    .btn.operator {
+      background: #ff6347;
+      color: white;
+    }
+    .btn.operator:hover {
+      background: #e5533d;
+    }
+    .btn.clear {
+      background: #dc3545;
+      color: white;
+    }
+    .btn.clear:hover {
+      background: #b12a36;
+    }
+    .btn.function {
+      background: #ffa500;
+      color: white;
+    }
+    .btn.function:hover {
+      background: #e69500;
+    }
+    .btn.equal {
+      background: #32cd32;
+      color: white;
+    }
+    .btn.equal:hover {
+      background: #28a428;
+    }
+    .btn-row {
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <input type="text" id="result" readonly>
+    <div class="btn-row">
+      <input type="button" class="btn function" value="C" onclick="clearResult()">
+      <input type="button" class="btn function" value="√" onclick="calculateSquareRoot()">
+      <input type="button" class="btn function" value="%" onclick="calculatePercentage()">
+      <input type="button" class="btn operator" value="/" onclick="appendToResult('/')">
+    </div>
+    <div class="btn-row">
+      <input type="button" class="btn number" value="7" onclick="appendToResult('7')">
+      <input type="button" class="btn number" value="8" onclick="appendToResult('8')">
+      <input type="button" class="btn number" value="9" onclick="appendToResult('9')">
+      <input type="button" class="btn operator" value="*" onclick="appendToResult('*')">
+    </div>
+    <div class="btn-row">
+      <input type="button" class="btn number" value="4" onclick="appendToResult('4')">
+      <input type="button" class="btn number" value="5" onclick="appendToResult('5')">
+      <input type="button" class="btn number" value="6" onclick="appendToResult('6')">
+      <input type="button" class="btn operator" value="-" onclick="appendToResult('-')">
+    </div>
+    <div class="btn-row">
+      <input type="button" class="btn number" value="1" onclick="appendToResult('1')">
+      <input type="button" class="btn number" value="2" onclick="appendToResult('2')">
+      <input type="button" class="btn number" value="3" onclick="appendToResult('3')">
+      <input type="button" class="btn operator" value="+" onclick="appendToResult('+')">
+    </div>
+    <div class="btn-row">
+      <input type="button" class="btn number" value="0" onclick="appendToResult('0')">
+      <input type="button" class="btn function" value="←" onclick="backspace()">
+      <input type="button" class="btn equal" value="=" onclick="calculateResult()">
+    </div>
+  </div>
+
+  <script>
+    function appendToResult(value) {
+      document.getElementById('result').value += value;
+    }
+
+    function calculateResult() {
+      try {
+        document.getElementById('result').value = eval(document.getElementById('result').value);
+      } catch (error) {
+        document.getElementById('result').value = 'Error';
+      }
+    }
+
+    function clearResult() {
+      document.getElementById('result').value = '';
+    }
+
+    function calculateSquareRoot() {
+      try {
+        let currentValue = parseFloat(document.getElementById('result').value);
+        document.getElementById('result').value = Math.sqrt(currentValue);
+      } catch (error) {
+        document.getElementById('result').value = 'Error';
+      }
+    }
+
+    function calculatePercentage() {
+      try {
+        let currentValue = parseFloat(document.getElementById('result').value);
+        document.getElementById('result').value = currentValue / 100;
+      } catch (error) {
+        document.getElementById('result').value = 'Error';
+      }
+    }
+
+    function backspace() {
+      let currentValue = document.getElementById('result').value;
+      document.getElementById('result').value = currentValue.slice(0, -1);
+    }
+  </script>
+</body>
+</html>
