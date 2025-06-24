@@ -1,163 +1,483 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>HTML Calculator</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #f0f8ff;
-    }
-    .calculator {
-      background: #222;
-      border: 3px solid #008080;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-      padding: 20px;
-      text-align: center;
-      width: 320px;
-    }
-    #result {
-      width: 100%;
-      height: 60px;
-      margin-bottom: 10px;
-      font-size: 1.5em;
-      text-align: right;
-      border: 1px solid #008080;
-      border-radius: 5px;
-      padding: 5px;
-      box-sizing: border-box;
-      background: #f0f0f0;
-      color: #000;
-    }
-    .btn {
-      width: 22%;
-      height: 50px;
-      margin: 5px;
-      font-size: 1.1em;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    .btn.number {
-      background: #20b2aa;
-      color: white;
-    }
-    .btn.number:hover {
-      background: #008b8b;
-    }
-    .btn.operator {
-      background: #ff6347;
-      color: white;
-    }
-    .btn.operator:hover {
-      background: #e5533d;
-    }
-    .btn.clear {
-      background: #dc3545;
-      color: white;
-    }
-    .btn.clear:hover {
-      background: #b12a36;
-    }
-    .btn.function {
-      background: #ffa500;
-      color: white;
-    }
-    .btn.function:hover {
-      background: #e69500;
-    }
-    .btn.equal {
-      background: #32cd32;
-      color: white;
-    }
-    .btn.equal:hover {
-      background: #28a428;
-    }
-    .btn-row {
-      display: flex;
-      justify-content: space-between;
-    }
-  </style>
+    <title>Advanced Scientific Calculator</title>
+    <style>
+        /* General Body Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            /* NEW BACKGROUND COLOR: A subtle blue-gray gradient */
+            background: linear-gradient(to bottom right, #5f72bd, #9b6ddb);
+            overflow: hidden;
+        }
+
+        /* Calculator Container */
+        .calculator {
+            background: #2a2a2a; /* Darker base for calculator */
+            border: 1px solid #444;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+            padding: 25px;
+            text-align: center;
+            /* WIDER CALCULATOR: Increased base width */
+            width: 420px; /* Increased from 350px */
+            max-width: 95%; /* Still allows shrinking on small screens */
+            box-sizing: border-box;
+        }
+
+        /* Result Display */
+        #result {
+            width: 100%;
+            height: 70px;
+            margin-bottom: 15px;
+            font-size: 2.2em;
+            text-align: right;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 15px;
+            box-sizing: border-box;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            outline: none;
+            font-weight: 300;
+            overflow-x: auto;
+            white-space: nowrap;
+            box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.8);
+            -webkit-appearance: none;
+        }
+
+        /* Button Styling */
+        .btn {
+            /* Adjusted calc() for the wider calculator and 4 columns */
+            width: calc(25% - 8px); /* 25% for 4 columns, minus total margin (4px left + 4px right) */
+            height: 60px;
+            margin: 4px;
+            font-size: 1.3em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Number Buttons */
+        .btn.number {
+            background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+            color: #e0e0e0;
+        }
+        .btn.number:hover {
+            background: linear-gradient(145deg, #4a4a4a, #3a3a3a);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Operator Buttons */
+        .btn.operator {
+            background: linear-gradient(145deg, #ff8c00, #e67e22);
+            color: #fff;
+        }
+        .btn.operator:hover {
+            background: linear-gradient(145deg, #ffa500, #f08c00);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Clear Button (C) */
+        .btn.clear {
+            background: linear-gradient(145deg, #e74c3c, #c0392b);
+            color: #fff;
+        }
+        .btn.clear:hover {
+            background: linear-gradient(145deg, #f05040, #d04030);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Equal Button */
+        .btn.equal {
+            background: linear-gradient(145deg, #2ecc71, #27ae60);
+            color: #fff;
+        }
+        .btn.equal:hover {
+            background: linear-gradient(145deg, #32cd32, #2eb85c);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Function Buttons (√, %, sin, cos, etc.) */
+        .btn.function {
+            background: linear-gradient(145deg, #6c5ce7, #4834d4);
+            color: #fff;
+            font-size: 1.1em;
+        }
+        .btn.function:hover {
+            background: linear-gradient(145deg, #7b68ee, #5a4bcd);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Button Rows */
+        .btn-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        /* Special sizing for the zero button */
+        .btn.zero {
+            /* Adjusted calc() for the wider calculator */
+            width: calc(50% - 8px); /* Roughly double width, accounting for margin */
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 480px) { /* Adjusted breakpoint for wider calculator */
+            .calculator {
+                padding: 15px;
+                width: 95%;
+            }
+            .btn {
+                height: 55px; /* Slightly smaller buttons on smaller screens */
+                font-size: 1.2em; /* Slightly smaller font */
+                margin: 3px;
+                width: calc(25% - 6px); /* Adjust calc() for smaller margins */
+            }
+            .btn.zero {
+                width: calc(50% - 6px); /* Adjust calc() for smaller margins */
+            }
+            #result {
+                height: 65px; /* Slightly smaller result display */
+                font-size: 2em;
+            }
+        }
+
+        @media (max-width: 380px) { /* Even smaller screens */
+            .btn {
+                font-size: 1em; /* Even smaller font */
+                height: 50px;
+            }
+            #result {
+                font-size: 1.8em;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="calculator">
-    <input type="text" id="result" readonly>
-    <div class="btn-row">
-      <input type="button" class="btn function" value="C" onclick="clearResult()">
-      <input type="button" class="btn function" value="√" onclick="calculateSquareRoot()">
-      <input type="button" class="btn function" value="%" onclick="calculatePercentage()">
-      <input type="button" class="btn operator" value="/" onclick="appendToResult('/')">
+    <div class="calculator">
+        <input type="text" id="result" readonly>
+
+        <div class="btn-row">
+            <input type="button" class="btn clear" value="C" onclick="clearResult()">
+            <input type="button" class="btn function" value="←" onclick="backspace()">
+            <input type="button" class="btn function" value="%" onclick="calculatePercentage()">
+            <input type="button" class="btn operator" value="/" onclick="appendToResult('/')">
+        </div>
+
+        <div class="btn-row">
+            <input type="button" class="btn function" value="x²" onclick="calculateSquare()">
+            <input type="button" class="btn function" value="√" onclick="calculateSquareRoot()">
+            <input type="button" class="btn function" value="+/-" onclick="changeSign()">
+            <input type="button" class="btn operator" value="*" onclick="appendToResult('*')">
+        </div>
+
+        <div class="btn-row">
+            <input type="button" class="btn number" value="7" onclick="appendToResult('7')">
+            <input type="button" class="btn number" value="8" onclick="appendToResult('8')">
+            <input type="button" class="btn number" value="9" onclick="appendToResult('9')">
+            <input type="button" class="btn operator" value="-" onclick="appendToResult('-')">
+        </div>
+
+        <div class="btn-row">
+            <input type="button" class="btn number" value="4" onclick="appendToResult('4')">
+            <input type="button" class="btn number" value="5" onclick="appendToResult('5')">
+            <input type="button" class="btn number" value="6" onclick="appendToResult('6')">
+            <input type="button" class="btn operator" value="+" onclick="appendToResult('+')">
+        </div>
+
+        <div class="btn-row">
+            <input type="button" class="btn number" value="1" onclick="appendToResult('1')">
+            <input type="button" class="btn number" value="2" onclick="appendToResult('2')">
+            <input type="button" class="btn number" value="3" onclick="appendToResult('3')">
+            <input type="button" class="btn equal" value="=" onclick="calculateResult()">
+        </div>
+
+        <div class="btn-row">
+            <input type="button" class="btn function" value="π" onclick="insertConstant('Math.PI')">
+            <input type="button" class="btn number zero" value="0" onclick="appendToResult('0')">
+            <input type="button" class="btn number" value="." onclick="appendDecimal()">
+        </div>
+
+        <div class="btn-row">
+            <input type="button" class="btn function" value="x^y" onclick="appendToResult('**')">
+            <input type="button" class="btn function" value="1/x" onclick="calculateReciprocal()">
+            <input type="button" class="btn function" value="log" onclick="calculateLog()">
+            <input type="button" class="btn function" value="ln" onclick="calculateLn()">
+        </div>
+
     </div>
-    <div class="btn-row">
-      <input type="button" class="btn number" value="7" onclick="appendToResult('7')">
-      <input type="button" class="btn number" value="8" onclick="appendToResult('8')">
-      <input type="button" class="btn number" value="9" onclick="appendToResult('9')">
-      <input type="button" class="btn operator" value="*" onclick="appendToResult('*')">
-    </div>
-    <div class="btn-row">
-      <input type="button" class="btn number" value="4" onclick="appendToResult('4')">
-      <input type="button" class="btn number" value="5" onclick="appendToResult('5')">
-      <input type="button" class="btn number" value="6" onclick="appendToResult('6')">
-      <input type="button" class="btn operator" value="-" onclick="appendToResult('-')">
-    </div>
-    <div class="btn-row">
-      <input type="button" class="btn number" value="1" onclick="appendToResult('1')">
-      <input type="button" class="btn number" value="2" onclick="appendToResult('2')">
-      <input type="button" class="btn number" value="3" onclick="appendToResult('3')">
-      <input type="button" class="btn operator" value="+" onclick="appendToResult('+')">
-    </div>
-    <div class="btn-row">
-      <input type="button" class="btn number" value="0" onclick="appendToResult('0')">
-      <input type="button" class="btn function" value="←" onclick="backspace()">
-      <input type="button" class="btn equal" value="=" onclick="calculateResult()">
-    </div>
-  </div>
 
-  <script>
-    function appendToResult(value) {
-      document.getElementById('result').value += value;
-    }
+    <script>
+        let currentExpression = '';
+        const resultInput = document.getElementById('result');
+        let calculated = false; // Flag to check if previous operation was '='
 
-    function calculateResult() {
-      try {
-        document.getElementById('result').value = eval(document.getElementById('result').value);
-      } catch (error) {
-        document.getElementById('result').value = 'Error';
-      }
-    }
+        function appendToResult(value) {
+            if (calculated && !isOperator(value)) {
+                // If a calculation just happened and the next input is a number, start fresh
+                currentExpression = value;
+            } else {
+                const lastChar = currentExpression.slice(-1);
+                // Prevent multiple operators in a row (e.g., '5++')
+                if (isOperator(value) && isOperator(lastChar)) {
+                    currentExpression = currentExpression.slice(0, -1) + value;
+                } else {
+                    currentExpression += value;
+                }
+            }
+            resultInput.value = currentExpression;
+            calculated = false; // Reset flag
+        }
 
-    function clearResult() {
-      document.getElementById('result').value = '';
-    }
+        function isOperator(char) {
+            return ['+', '-', '*', '/', '**'].includes(char);
+        }
 
-    function calculateSquareRoot() {
-      try {
-        let currentValue = parseFloat(document.getElementById('result').value);
-        document.getElementById('result').value = Math.sqrt(currentValue);
-      } catch (error) {
-        document.getElementById('result').value = 'Error';
-      }
-    }
+        function appendDecimal() {
+            // Get the current number part (after the last operator, or the whole string)
+            const parts = currentExpression.split(/[\+\-\*\/]/);
+            const lastNumber = parts[parts.length - 1];
 
-    function calculatePercentage() {
-      try {
-        let currentValue = parseFloat(document.getElementById('result').value);
-        document.getElementById('result').value = currentValue / 100;
-      } catch (error) {
-        document.getElementById('result').value = 'Error';
-      }
-    }
+            if (calculated) { // If a calculation just happened, start new with '0.'
+                currentExpression = '0.';
+            } else if (!lastNumber.includes('.')) {
+                // If current expression is empty or ends with an operator, start with '0.'
+                if (currentExpression === '' || isOperator(currentExpression.slice(-1))) {
+                     // Check if adding '0.' would result in something like '0.0.' or '.0.'
+                    if (lastNumber === '') { // Means it's after an operator or empty
+                        currentExpression += '0.';
+                    } else { // Means it's a number like '5' and we add '.': '5.'
+                        currentExpression += '.';
+                    }
+                } else { // Means it's a number like '5' and we add '.': '5.'
+                    currentExpression += '.';
+                }
+            }
+            resultInput.value = currentExpression;
+            calculated = false;
+        }
 
-    function backspace() {
-      let currentValue = document.getElementById('result').value;
-      document.getElementById('result').value = currentValue.slice(0, -1);
-    }
-  </script>
+        function calculateResult() {
+            try {
+                // Replace '^' with '**' for JavaScript's exponentiation operator if needed
+                let expressionToEvaluate = currentExpression.replace(/\^/g, '**');
+
+                let result = eval(expressionToEvaluate);
+
+                if (!isFinite(result)) {
+                    resultInput.value = 'Error';
+                    currentExpression = '';
+                    calculated = true;
+                    return;
+                }
+
+                if (result % 1 === 0) {
+                    resultInput.value = result;
+                } else {
+                    resultInput.value = parseFloat(result.toFixed(10)); // Higher precision for scientific
+                }
+                currentExpression = resultInput.value.toString();
+                calculated = true;
+            } catch (error) {
+                resultInput.value = 'Error';
+                currentExpression = '';
+                calculated = true;
+            }
+        }
+
+        function clearResult() {
+            currentExpression = '';
+            resultInput.value = '';
+            calculated = false;
+        }
+
+        function backspace() {
+            if (calculated) { // If result is displayed, clear it on backspace
+                currentExpression = '';
+            } else {
+                currentExpression = currentExpression.slice(0, -1);
+            }
+            resultInput.value = currentExpression;
+            calculated = false;
+        }
+
+        function calculateSquareRoot() {
+            try {
+                let value = parseFloat(currentExpression);
+                if (value < 0) {
+                    resultInput.value = 'Error (Negative Root)';
+                    currentExpression = '';
+                } else if (!isNaN(value)) {
+                    resultInput.value = Math.sqrt(value).toFixed(10);
+                    currentExpression = resultInput.value.toString();
+                } else {
+                    resultInput.value = 'Error';
+                    currentExpression = '';
+                }
+                calculated = true;
+            } catch (error) {
+                resultInput.value = 'Error';
+                currentExpression = '';
+                calculated = true;
+            }
+        }
+
+        function calculatePercentage() {
+            try {
+                let value = parseFloat(currentExpression);
+                if (!isNaN(value)) {
+                    resultInput.value = (value / 100).toFixed(10);
+                    currentExpression = resultInput.value.toString();
+                } else {
+                    resultInput.value = 'Error';
+                    currentExpression = '';
+                }
+                calculated = true;
+            } catch (error) {
+                resultInput.value = 'Error';
+                currentExpression = '';
+                calculated = true;
+            }
+        }
+
+        function changeSign() {
+            try {
+                let value = parseFloat(currentExpression);
+                if (!isNaN(value)) {
+                    resultInput.value = (value * -1).toFixed(10);
+                    currentExpression = resultInput.value.toString();
+                } else {
+                    resultInput.value = 'Error';
+                    currentExpression = '';
+                }
+                calculated = true;
+            } catch (error) {
+                resultInput.value = 'Error';
+                currentExpression = '';
+                calculated = true;
+            }
+        }
+
+        function calculateReciprocal() {
+            try {
+                let value = parseFloat(currentExpression);
+                if (value === 0) {
+                    resultInput.value = 'Error (Divide by 0)';
+                    currentExpression = '';
+                } else if (!isNaN(value)) {
+                    resultInput.value = (1 / value).toFixed(10);
+                    currentExpression = resultInput.value.toString();
+                } else {
+                    resultInput.value = 'Error';
+                    currentExpression = '';
+                }
+                calculated = true;
+            } catch (error) {
+                resultInput.value = 'Error';
+                currentExpression = '';
+                calculated = true;
+            }
+        }
+
+        function calculateSquare() {
+            try {
+                let value = parseFloat(currentExpression);
+                if (!isNaN(value)) {
+                    resultInput.value = (value * value).toFixed(10);
+                    currentExpression = resultInput.value.toString();
+                } else {
+                    resultInput.value = 'Error';
+                    currentExpression = '';
+                }
+                calculated = true;
+            } catch (error) {
+                resultInput.value = 'Error';
+                currentExpression = '';
+                calculated = true;
+            }
+        }
+
+        function calculateLog() {
+            try {
+                let value = parseFloat(currentExpression);
+                if (value <= 0) {
+                    resultInput.value = 'Error (Log of non-positive)';
+                    currentExpression = '';
+                } else if (!isNaN(value)) {
+                    resultInput.value = Math.log10(value).toFixed(10);
+                    currentExpression = resultInput.value.toString();
+                } else {
+                    resultInput.value = 'Error';
+                    currentExpression = '';
+                }
+                calculated = true;
+            } catch (error) {
+                resultInput.value = 'Error';
+                currentExpression = '';
+                calculated = true;
+            }
+        }
+
+        function calculateLn() {
+            try {
+                let value = parseFloat(currentExpression);
+                if (value <= 0) {
+                    resultInput.value = 'Error (Ln of non-positive)';
+                    currentExpression = '';
+                } else if (!isNaN(value)) {
+                    resultInput.value = Math.log(value).toFixed(10); // Math.log is natural log (ln)
+                    currentExpression = resultInput.value.toString();
+                } else {
+                    resultInput.value = 'Error';
+                    currentExpression = '';
+                }
+                calculated = true;
+            } catch (error) {
+                resultInput.value = 'Error';
+                currentExpression = '';
+                calculated = true;
+            }
+        }
+
+        function insertConstant(constant) {
+            const constantValue = eval(constant).toFixed(10); // Evaluate the constant once
+
+            if (calculated) { // If a calculation just happened, start fresh with the constant
+                currentExpression = constantValue;
+            } else {
+                const lastChar = currentExpression.slice(-1);
+                if (currentExpression === '' || isOperator(lastChar)) {
+                     currentExpression += constantValue;
+                } else {
+                    // If a number is currently being typed, replace it with the constant
+                    const parts = currentExpression.split(/([\+\-\*\/])/);
+                    if(parts.length > 0 && !isNaN(parseFloat(parts[parts.length -1]))) {
+                         parts[parts.length -1] = constantValue;
+                         currentExpression = parts.join('');
+                    } else {
+                        currentExpression += constantValue; // Fallback to append if no clear number to replace
+                    }
+                }
+            }
+            resultInput.value = currentExpression;
+            calculated = false;
+        }
+
+    </script>
 </body>
 </html>
